@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PE — Your personal exam-prep trail map with lectures, notes & questions organized by subject, plus a placement portal for interview prep.">
+    <title>PE — Exam Prep & Placement Portal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Portal Navigation -->
+    <nav class="portal-nav">
+        <div class="portal-nav-inner">
+            <button class="portal-btn active" data-portal="exam">
+                <span class="portal-btn-icon">📚</span>
+                Exam Prep
+            </button>
+            <button class="portal-btn" data-portal="placement">
+                <span class="portal-btn-icon">💼</span>
+                Placements
+            </button>
+        </div>
+    </nav>
+
+    <!-- Exam Prep Header -->
+    <header id="exam-header">
+        <div class="eyebrow">Semester Trail Map</div>
+        <h1>UNIROUTE</h1>
+        <p class="subtitle">Navigate your subjects, track your progress, and access all lectures, notes &amp; past-year questions in one place.</p>
+        <div class="progress-bar-wrap">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">0 / 0 subjects marked done</div>
+        </div>
+    </header>
+
+    <!-- Placement Portal Header -->
+    <header id="placement-header" style="display:none;">
+        <div class="eyebrow eyebrow-placement">Placement Portal</div>
+        <h1>UNIROUTE <span class="title-accent">Placements</span></h1>
+        <p class="subtitle">Company-wise eligibility criteria, DSA questions, and web dev &amp; project interview resources — all in one trail.</p>
+    </header>
+
+    <!-- Exam Prep Route / Trail Map -->
+    <div id="route-container">
+        <svg id="route-svg"></svg>
+    </div>
+
+    <!-- Placement Route / Trail Map -->
+    <div id="placement-container" style="display:none;">
+        <svg id="placement-svg"></svg>
+    </div>
+
+    <!-- Overlay (backdrop for panel) -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Side Panel (shared between exam & placement) -->
+    <div class="panel" id="panel">
+        <div class="panel-head">
+            <div class="panel-icon" id="panelIcon"></div>
+            <div>
+                <h2 class="panel-title" id="panelTitle"></h2>
+                <div class="panel-sub" id="panelSub"></div>
+            </div>
+            <button class="panel-close" id="panelClose" aria-label="Close panel">&times;</button>
+        </div>
+        <div class="tabs" id="tabs"></div>
+        <div class="panel-body" id="panelBody"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        built for focused prep &middot; PE
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
