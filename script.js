@@ -54,46 +54,43 @@ const ICONS = {
 };
 
 /* ============ DATA — EXAM PREP ============ */
-const SUBJECTS = [
-    {
-        id: "ds", name: "Data Structures", icon: "tree", color: "#E3A857", done: true,
-        lectures: [
-            { module: "M1", title: "Arrays & Linked Lists", url: "#" },
-            { module: "M2", title: "Stacks & Queues", url: "#" },
-            { module: "M3", title: "Trees & BSTs", url: "#" }
-        ],
-        notes: [
-            { module: "M1", title: "Array operations cheat sheet", url: "#" },
-            { module: "M3", title: "Tree traversal notes", url: "#" }
-        ],
-        questions: [
-            { module: "M2", title: "Stack/Queue PYQ set", url: "#" }
-        ]
-    },
-    {
-        id: "algo", name: "Algorithms", icon: "flow", color: "#4FB3A9", done: false,
-        lectures: [
-            { module: "M1", title: "Sorting algorithms", url: "#" },
-            { module: "M2", title: "Divide & conquer", url: "#" }
-        ],
-        notes: [
-            { module: "M1", title: "Complexity analysis notes", url: "#" }
-        ],
-        questions: []
-    },
-    {
-        id: "calc", name: "Calculus", icon: "sigma", color: "#E3C857", done: false,
-        lectures: [],
-        notes: [],
-        questions: []
-    },
-    {
-        id: "compphys", name: "Computational Physics", icon: "atom", color: "#8CA6E0", done: false,
-        lectures: [],
-        notes: [],
-        questions: []
-    }
-];
+let SUBJECTS = [];
+
+async function fetchSubjects() {
+  try {
+    const res = await fetch('http://127.0.0.1:8000/api/subjects/');
+    const data = await res.json();
+
+    SUBJECTS = data.map(subj => {
+      const lectures = [];
+      const notes = [];
+      const questions = [];
+
+      subj.modules.forEach(mod => {
+        mod.lectures.forEach(l => lectures.push({ module: mod.title, title: l.title, url: l.url }));
+        mod.notes.forEach(n => notes.push({
+          module: mod.title,
+          title: n.title,
+          url: n.url || n.file,
+        }));
+        mod.questions.forEach(q => questions.push({ module: mod.title, title: q.title, url: q.url }));
+      });
+
+      return {
+        id: String(subj.id),
+        name: subj.name,
+        icon: subj.icon,
+        color: subj.color,
+        done: subj.done,
+        lectures, notes, questions
+      };
+    });
+
+    layoutStations();
+  } catch (err) {
+    console.error('Failed to load subjects from API:', err);
+  }
+}
 
 /* ============ DATA — PLACEMENT PORTAL WITH LOGOS ============ */
 const COMPANIES = [
@@ -638,7 +635,8 @@ window.addEventListener('resize', () => {
 });
 
 /* ============ INIT ============ */
-layoutStations();
+
+fetchSubjects();
 layoutPlacementStations();
 document.getElementById('placement-container').style.display = 'none';
 document.getElementById('placement-header').style.display = 'none';
