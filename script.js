@@ -343,8 +343,16 @@ let activeTab = 'lectures';
 let activeCompany = null;
 let activePlacementTab = 'eligibility';
 let panelMode = 'exam'; // 'exam' or 'placement'
+
 let currentPage = 1;
 const ITEMS_PER_PAGE = 50;
+let searchQuery = '';
+const searchInput = document.getElementById('searchInput');
+const searchWrap = document.getElementById('searchWrap');
+
+// Listen for search inputs
+
+
 
 function renderPagination(totalItems) {
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
@@ -367,6 +375,7 @@ function openPanel(id) {
     activeSubject = SUBJECTS.find(s => s.id === id);
     activeTab = 'lectures';
     currentPage = 1;
+    searchQuery = '';
     panelTitle.textContent = activeSubject.name;
     panelSub.textContent = `${totalItems(activeSubject)} resources across ${TAB_DEFS.length} sections`;
     panelIcon.innerHTML = ICONS[activeSubject.icon];
@@ -382,6 +391,7 @@ function openPlacementPanel(id) {
     activeCompany = COMPANIES.find(c => c.id === id);
     activePlacementTab = 'eligibility';
     currentPage = 1;
+    searchQuery = '';
     panelTitle.textContent = activeCompany.name;
     const totalRes = activeCompany.dsa.length + activeCompany.webdev.length;
     panelSub.textContent = `${totalRes} interview questions · eligibility details`;
@@ -400,6 +410,8 @@ function closePanel() {
 
 /* ---- Exam tabs ---- */
 function renderTabs() {
+    searchWrap.style.display = 'block';
+    searchInput.value = searchQuery;
     tabsEl.innerHTML = TAB_DEFS.map(t => `
     <button class="tab ${t.key === activeTab ? 'active' : ''}" data-tab="${t.key}">
       ${t.label} <span class="count">${activeSubject[t.key].length}</span>
@@ -438,6 +450,8 @@ function renderTabContent() {
 
 /* ---- Placement tabs ---- */
 function renderPlacementTabs() {
+    searchWrap.style.display = activePlacementTab === 'eligibility' ? 'none' : 'block';
+    searchInput.value = searchQuery;
     tabsEl.innerHTML = PLACEMENT_TAB_DEFS.map(t => {
         let count = '';
         if (t.key === 'eligibility') count = '\u2014';
@@ -565,11 +579,13 @@ tabsEl.addEventListener('click', (e) => {
     if (panelMode === 'exam' && tab.dataset.tab) {
         activeTab = tab.dataset.tab;
         currentPage = 1;
+        searchQuery = '';
         renderTabs();
         renderTabContent();
     } else if (panelMode === 'placement' && tab.dataset.ptab) {
         activePlacementTab = tab.dataset.ptab;
         currentPage = 1;
+        searchQuery = '';
         renderPlacementTabs();
         renderPlacementTabContent();
     }
@@ -596,6 +612,11 @@ document.querySelector('.portal-nav').addEventListener('click', (e) => {
 overlay.addEventListener('click', closePanel);
 document.getElementById('panelClose').addEventListener('click', closePanel);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+searchInput.addEventListener('input', (e) => {
+  searchQuery = e.target.value.toLowerCase();
+  if (panelMode === 'exam') renderTabContent();
+  else renderPlacementTabContent();
+});
 
 // Resize
 window.addEventListener('resize', () => {
@@ -609,3 +630,32 @@ fetchSubjects();
 fetchCompanies();
 document.getElementById('placement-container').style.display = 'none';
 document.getElementById('placement-header').style.display = 'none';
+// Checkbox toggle logic
+panelBody.addEventListener('click', (e) => {
+    const cb = e.target.closest('.item-checkbox');
+    if (cb) {
+        e.preventDefault();
+        const url = cb.dataset.url;
+        
+        // Find the item in memory and toggle it
+        let found = false;
+        if (panelMode === 'exam') {
+             const items = activeSubject[activeTab];
+             for (let it of items) {
+                 if (it.url === url) { it.done = !it.done; found = true; break; }
+             }
+             if (found) renderTabContent();
+        } else {
+             const items = activePlacementTab === 'dsa' ? activeCompany.dsa : activeCompany.webdev;
+             for (let it of items) {
+                 if (it.url === url) { it.done = !it.done; found = true; break; }
+             }
+             if (found) renderPlacementTabContent();
+        }
+        
+        // *Note for Developer:* 
+        // Right now this just toggles progress in the browser memory for the UI.
+        // Once your backend is deployed, you'd add your API POST request right here:
+        // fetch('http://127.0.0.1:8000/api/mark-done', { method: 'POST', body: JSON.stringify({ url }) })
+    }
+});
