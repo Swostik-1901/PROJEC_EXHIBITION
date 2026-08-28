@@ -99,133 +99,28 @@ async function fetchSubjects() {
 }
 
 /* ============ DATA — PLACEMENT PORTAL WITH LOGOS ============ */
-const COMPANIES = [
-    {
-        id: "google", name: "Google", icon: "google", color: "#4285F4",
-        eligibility: {
-            cgpa: "7.0+ (No strict cutoff, but recommended)",
-            branches: "CS, IT, ECE, EE",
-            backlogs: "No active backlogs",
-            batch: "2026 / 2027",
-            details: "Online coding round → Technical phone screen → On-site interviews (4-5 rounds). Strong focus on Data Structures, Algorithms, and System Design."
-        },
-        dsa: [
-            { title: "Two Sum", difficulty: "Easy", url: "#" },
-            { title: "Longest Substring Without Repeating Characters", difficulty: "Medium", url: "#" },
-            { title: "Median of Two Sorted Arrays", difficulty: "Hard", url: "#" },
-            { title: "LRU Cache", difficulty: "Medium", url: "#" },
-            { title: "Word Ladder", difficulty: "Hard", url: "#" }
-        ],
-        webdev: [
-            { title: "Build a Real-time Chat App", type: "Project", url: "#" },
-            { title: "REST API Design Principles", type: "Concept", url: "#" },
-            { title: "Google Docs Clone — Collaborative Editor", type: "Project", url: "#" }
-        ]
-    },
-    {
-        id: "microsoft", name: "Microsoft", icon: "microsoft", color: "#00A4EF",
-        eligibility: {
-            cgpa: "7.0+",
-            branches: "CS, IT, ECE",
-            backlogs: "No active backlogs",
-            batch: "2026 / 2027",
-            details: "Online assessment → Group fly round → Technical interviews (2-3 rounds) → HR round. Focus on coding, OS, DBMS, and problem-solving."
-        },
-        dsa: [
-            { title: "Merge K Sorted Lists", difficulty: "Hard", url: "#" },
-            { title: "Binary Tree Level Order Traversal", difficulty: "Medium", url: "#" },
-            { title: "Rotate Image", difficulty: "Medium", url: "#" },
-            { title: "Serialize and Deserialize Binary Tree", difficulty: "Hard", url: "#" }
-        ],
-        webdev: [
-            { title: "Build a Kanban Board (Trello Clone)", type: "Project", url: "#" },
-            { title: "Azure Functions & Serverless Architecture", type: "Concept", url: "#" },
-            { title: "Portfolio Website with .NET Backend", type: "Project", url: "#" }
-        ]
-    },
-    {
-        id: "amazon", name: "Amazon", icon: "amazon", color: "#FF9900",
-        eligibility: {
-            cgpa: "6.5+",
-            branches: "CS, IT, ECE, EE, ME",
-            backlogs: "No active backlogs",
-            batch: "2026 / 2027",
-            details: "Online assessment (2 coding + workstyle assessment) → Technical interviews (3 rounds) → Bar raiser round. Strong emphasis on Leadership Principles."
-        },
-        dsa: [
-            { title: "Number of Islands", difficulty: "Medium", url: "#" },
-            { title: "Min Stack", difficulty: "Medium", url: "#" },
-            { title: "Course Schedule", difficulty: "Medium", url: "#" },
-            { title: "Trapping Rain Water", difficulty: "Hard", url: "#" },
-            { title: "Design a Parking Lot (LLD)", difficulty: "Medium", url: "#" }
-        ],
-        webdev: [
-            { title: "E-commerce Platform (Full Stack)", type: "Project", url: "#" },
-            { title: "AWS S3 & Lambda Integration", type: "Concept", url: "#" },
-            { title: "Microservices with Node.js", type: "Project", url: "#" }
-        ]
-    },
-    {
-        id: "tcs", name: "TCS", icon: "tcs", color: "#0072C6",
-        eligibility: {
-            cgpa: "6.0+",
-            branches: "All engineering branches",
-            backlogs: "No active backlogs at time of joining",
-            batch: "2026 / 2027",
-            details: "TCS NQT (National Qualifier Test) → Technical interview → Managerial interview → HR round. Separate tracks for Digital and Ninja roles."
-        },
-        dsa: [
-            { title: "Reverse a Linked List", difficulty: "Easy", url: "#" },
-            { title: "Valid Parentheses", difficulty: "Easy", url: "#" },
-            { title: "Longest Common Subsequence", difficulty: "Medium", url: "#" }
-        ],
-        webdev: [
-            { title: "Student Management System", type: "Project", url: "#" },
-            { title: "HTML/CSS/JS Fundamentals", type: "Concept", url: "#" },
-            { title: "CRUD App with React & Express", type: "Project", url: "#" }
-        ]
-    },
-    {
-        id: "infosys", name: "Infosys", icon: "infosys", color: "#007CC3",
-        eligibility: {
-            cgpa: "6.0+",
-            branches: "All engineering branches",
-            backlogs: "No standing arrears",
-            batch: "2026 / 2027",
-            details: "InfyTQ / HackWithInfy online rounds → Technical interview → HR round. Roles: Systems Engineer, Power Programmer, Digital Specialist Engineer."
-        },
-        dsa: [
-            { title: "Fibonacci Number", difficulty: "Easy", url: "#" },
-            { title: "Search in Rotated Sorted Array", difficulty: "Medium", url: "#" },
-            { title: "Maximum Subarray (Kadane's)", difficulty: "Medium", url: "#" }
-        ],
-        webdev: [
-            { title: "Blog Platform with Authentication", type: "Project", url: "#" },
-            { title: "Spring Boot REST API", type: "Concept", url: "#" }
-        ]
-    },
-    {
-        id: "flipkart", name: "Flipkart", icon: "flipkart", color: "#F4C542",
-        eligibility: {
-            cgpa: "7.0+",
-            branches: "CS, IT, ECE",
-            backlogs: "No active backlogs",
-            batch: "2026 / 2027",
-            details: "Online coding round (3 questions) → Machine coding round → Technical interviews (2-3 rounds) → Hiring manager round. Strong focus on scalable system design."
-        },
-        dsa: [
-            { title: "Clone Graph", difficulty: "Medium", url: "#" },
-            { title: "Design Twitter (System Design)", difficulty: "Hard", url: "#" },
-            { title: "Find Median from Data Stream", difficulty: "Hard", url: "#" },
-            { title: "Sliding Window Maximum", difficulty: "Hard", url: "#" }
-        ],
-        webdev: [
-            { title: "Product Listing with Filters (React)", type: "Project", url: "#" },
-            { title: "WebSocket-based Live Notifications", type: "Concept", url: "#" },
-            { title: "Payment Gateway Integration", type: "Project", url: "#" }
-        ]
-    }
-];
+let COMPANIES = [];
+
+async function fetchCompanies() {
+  try {
+    const res = await fetch('http://127.0.0.1:8000/api/companies/');
+    const data = await res.json();
+
+    COMPANIES = data.map(c => ({
+      id: String(c.id),
+      name: c.name,
+      icon: c.icon,
+      color: c.color,
+      eligibility: c.eligibility || { cgpa: '-', branches: '-', backlogs: '-', batch: '-', details: 'Not added yet.' },
+      dsa: c.dsa_questions.map(q => ({ title: q.title, difficulty: q.difficulty, url: q.url, topic: q.topic })),
+      webdev: c.webdev_items.map(w => ({ title: w.title, type: w.type, url: w.url }))
+    }));
+
+    layoutPlacementStations();
+  } catch (err) {
+    console.error('Failed to load companies from API:', err);
+  }
+}
 
 /* ============ PORTAL SWITCHING ============ */
 let activePortal = 'exam'; // 'exam' or 'placement'
@@ -548,26 +443,41 @@ function renderPlacementTabContent() {
         return;
     }
 
-    if (activePlacementTab === 'dsa') {
+        if (activePlacementTab === 'dsa') {
         const items = activeCompany.dsa;
         if (items.length === 0) {
             panelBody.innerHTML = `<div class="empty-note">No DSA questions added yet — update the COMPANIES data.</div>`;
             return;
         }
-        panelBody.innerHTML = `<ul class="item-list">
-      ${items.map((it, i) => `
-        <li style="--item-i: ${i};">
-          <a class="item" href="${it.url}" target="_blank" rel="noopener">
-            <span class="item-dot"></span>
-            <span class="item-text">
-              <div class="item-title">${it.title}</div>
-              <div class="item-module"><span class="difficulty-badge ${it.difficulty.toLowerCase()}">${it.difficulty}</span></div>
-            </span>
-            <span class="item-go">\u2192</span>
-          </a>
-        </li>
-      `).join('')}
-    </ul>`;
+
+        const groups = {};
+        items.forEach(it => {
+            const primaryTopic = (it.topic || 'Other').split(',')[0].trim() || 'Other';
+            if (!groups[primaryTopic]) groups[primaryTopic] = [];
+            groups[primaryTopic].push(it);
+        });
+
+        const sortedTopics = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+
+        panelBody.innerHTML = sortedTopics.map(topic => `
+          <div class="topic-group">
+            <div class="topic-heading">${topic} <span class="count">${groups[topic].length}</span></div>
+            <ul class="item-list">
+              ${groups[topic].map((it, i) => `
+                <li style="--item-i: ${i};">
+                  <a class="item" href="${it.url}" target="_blank" rel="noopener">
+                    <span class="item-dot"></span>
+                    <span class="item-text">
+                      <div class="item-title">${it.title}</div>
+                      <div class="item-module"><span class="difficulty-badge ${it.difficulty.toLowerCase()}">${it.difficulty}</span></div>
+                    </span>
+                    <span class="item-go">\u2192</span>
+                  </a>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        `).join('');
         return;
     }
 
@@ -644,7 +554,7 @@ window.addEventListener('resize', () => {
 /* ============ INIT ============ */
 
 fetchSubjects();
-layoutPlacementStations();
+fetchCompanies();
 document.getElementById('placement-container').style.display = 'none';
 document.getElementById('placement-header').style.display = 'none';
 
