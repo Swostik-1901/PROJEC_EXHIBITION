@@ -413,8 +413,12 @@ function renderTabContent() {
         panelBody.innerHTML = `<div class="empty-note">Nothing added to ${activeTab} yet — add links in the SUBJECTS data.</div>`;
         return;
     }
-    panelBody.innerHTML = `<ul class="item-list">
-    ${items.map((it, i) => `
+    
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    let html = `<ul class="item-list">
+    ${paginatedItems.map((it, i) => `
       <li style="--item-i: ${i};">
         <a class="item" href="${it.url}" target="_blank" rel="noopener">
           <span class="item-dot"></span>
@@ -427,6 +431,9 @@ function renderTabContent() {
       </li>
     `).join('')}
   </ul>`;
+    
+    html += renderPagination(items.length);
+    panelBody.innerHTML = html;
 }
 
 /* ---- Placement tabs ---- */
@@ -462,15 +469,18 @@ function renderPlacementTabContent() {
         return;
     }
 
-        if (activePlacementTab === 'dsa') {
+    if (activePlacementTab === 'dsa') {
         const items = activeCompany.dsa;
         if (items.length === 0) {
             panelBody.innerHTML = `<div class="empty-note">No DSA questions added yet — update the COMPANIES data.</div>`;
             return;
         }
 
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const paginatedItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
         const groups = {};
-        items.forEach(it => {
+        paginatedItems.forEach(it => {
             const primaryTopic = (it.topic || 'Other').split(',')[0].trim() || 'Other';
             if (!groups[primaryTopic]) groups[primaryTopic] = [];
             groups[primaryTopic].push(it);
@@ -478,9 +488,9 @@ function renderPlacementTabContent() {
 
         const sortedTopics = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
 
-        panelBody.innerHTML = sortedTopics.map(topic => `
+        let html = sortedTopics.map(topic => `
           <div class="topic-group">
-            <div class="topic-heading">${topic} <span class="count">${groups[topic].length}</span></div>
+            <div class="topic-heading" style="font-weight:600; font-size:14px; margin:16px 0 8px; color:var(--text);">${topic} <span class="count" style="font-size:11px; color:var(--text-faint); margin-left:6px;">${groups[topic].length}</span></div>
             <ul class="item-list">
               ${groups[topic].map((it, i) => `
                 <li style="--item-i: ${i};">
@@ -497,6 +507,9 @@ function renderPlacementTabContent() {
             </ul>
           </div>
         `).join('');
+        
+        html += renderPagination(items.length);
+        panelBody.innerHTML = html;
         return;
     }
 
@@ -506,8 +519,12 @@ function renderPlacementTabContent() {
             panelBody.innerHTML = `<div class="empty-note">No Web Dev / Project questions added yet — update the COMPANIES data.</div>`;
             return;
         }
-        panelBody.innerHTML = `<ul class="item-list">
-      ${items.map((it, i) => `
+        
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const paginatedItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+        let html = `<ul class="item-list">
+      ${paginatedItems.map((it, i) => `
         <li style="--item-i: ${i};">
           <a class="item" href="${it.url}" target="_blank" rel="noopener">
             <span class="item-dot"></span>
@@ -520,6 +537,9 @@ function renderPlacementTabContent() {
         </li>
       `).join('')}
     </ul>`;
+    
+        html += renderPagination(items.length);
+        panelBody.innerHTML = html;
         return;
     }
 }
@@ -589,5 +609,3 @@ fetchSubjects();
 fetchCompanies();
 document.getElementById('placement-container').style.display = 'none';
 document.getElementById('placement-header').style.display = 'none';
-
-
