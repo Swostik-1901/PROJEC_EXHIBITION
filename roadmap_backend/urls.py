@@ -3,10 +3,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from core.views import SubjectViewSet
+from core.views import SubjectViewSet, CompanyViewSet
 
 router = DefaultRouter()
 router.register(r"subjects", SubjectViewSet)
+router.register(r"companies", CompanyViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

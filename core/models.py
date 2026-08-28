@@ -63,3 +63,53 @@ class HandwrittenNote(models.Model):
 
     def __str__(self):
         return self.title
+class Company(models.Model):
+    name = models.CharField(max_length=100)
+    icon = models.CharField(max_length=50, default="google")  # matches ICONS keys: google, microsoft, amazon, tcs, infosys, flipkart
+    color = models.CharField(max_length=7, default="#4285F4")
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order"]
+        verbose_name_plural = "Companies"
+
+    def __str__(self):
+        return self.name
+
+
+class Eligibility(models.Model):
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name="eligibility")
+    cgpa = models.CharField(max_length=200)
+    branches = models.CharField(max_length=200)
+    backlogs = models.CharField(max_length=200)
+    batch = models.CharField(max_length=100)
+    details = models.TextField()
+
+    def __str__(self):
+        return f"Eligibility - {self.company.name}"
+
+
+class DSAQuestion(models.Model):
+    DIFFICULTY_CHOICES = [("Easy", "Easy"), ("Medium", "Medium"), ("Hard", "Hard")]
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="dsa_questions")
+    title = models.CharField(max_length=200)
+    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES)
+    url = models.URLField()
+    topic = models.CharField(max_length=200, blank=True)  # e.g. "Array, Hash Table"
+    frequency = models.FloatField(default=0)  # how often it's asked, from the CSV
+
+    def __str__(self):
+        return self.title
+
+
+class WebDevItem(models.Model):
+    TYPE_CHOICES = [("Project", "Project"), ("Concept", "Concept")]
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="webdev_items")
+    title = models.CharField(max_length=200)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    url = models.URLField()
+
+    def __str__(self):
+        return self.title

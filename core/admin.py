@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Subject, Module, Lecture, Note, Question, HandwrittenNote
+from .models import (
+    Subject, Module, Lecture, Note, Question, HandwrittenNote,
+    Company, Eligibility, DSAQuestion, WebDevItem
+)
 
 
 class ModuleInline(admin.TabularInline):
@@ -37,3 +40,24 @@ class SubjectAdmin(admin.ModelAdmin):
 class ModuleAdmin(admin.ModelAdmin):
     list_display = ("title", "subject", "order")
     inlines = [LectureInline, NoteInline, QuestionInline, HandwrittenNoteInline]
+
+
+class EligibilityInline(admin.StackedInline):
+    model = Eligibility
+    extra = 0
+
+
+class DSAQuestionInline(admin.TabularInline):
+    model = DSAQuestion
+    extra = 1
+
+
+class WebDevItemInline(admin.TabularInline):
+    model = WebDevItem
+    extra = 1
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ("name", "order")
+    inlines = [EligibilityInline, DSAQuestionInline, WebDevItemInline]
