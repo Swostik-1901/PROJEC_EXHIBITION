@@ -343,12 +343,30 @@ let activeTab = 'lectures';
 let activeCompany = null;
 let activePlacementTab = 'eligibility';
 let panelMode = 'exam'; // 'exam' or 'placement'
+let currentPage = 1;
+const ITEMS_PER_PAGE = 50;
+
+function renderPagination(totalItems) {
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    if (totalPages <= 1) return '';
+    
+    return `
+      <div class="pagination-controls" style="display:flex; justify-content:center; gap:12px; margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+        <button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''} style="padding:6px 14px; background:var(--bg-soft); color:${currentPage === 1 ? 'var(--text-faint)' : 'var(--text)'}; border:1px solid var(--border); border-radius:8px; cursor:${currentPage === 1 ? 'not-allowed' : 'pointer'}; font-family:inherit; font-size:13px; font-weight:500; transition:background 0.2s;">Previous</button>
+        
+        <span style="color:var(--text-dim); align-self:center; font-size:13px; font-family:'JetBrains Mono', monospace;">Page ${currentPage} of ${totalPages}</span>
+        
+        <button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''} style="padding:6px 14px; background:var(--bg-soft); color:${currentPage === totalPages ? 'var(--text-faint)' : 'var(--text)'}; border:1px solid var(--border); border-radius:8px; cursor:${currentPage === totalPages ? 'not-allowed' : 'pointer'}; font-family:inherit; font-size:13px; font-weight:500; transition:background 0.2s;">Next</button>
+      </div>
+    `;
+}
 
 /* ---- Open panels ---- */
 function openPanel(id) {
     panelMode = 'exam';
     activeSubject = SUBJECTS.find(s => s.id === id);
     activeTab = 'lectures';
+    currentPage = 1;
     panelTitle.textContent = activeSubject.name;
     panelSub.textContent = `${totalItems(activeSubject)} resources across ${TAB_DEFS.length} sections`;
     panelIcon.innerHTML = ICONS[activeSubject.icon];
@@ -363,6 +381,7 @@ function openPlacementPanel(id) {
     panelMode = 'placement';
     activeCompany = COMPANIES.find(c => c.id === id);
     activePlacementTab = 'eligibility';
+    currentPage = 1;
     panelTitle.textContent = activeCompany.name;
     const totalRes = activeCompany.dsa.length + activeCompany.webdev.length;
     panelSub.textContent = `${totalRes} interview questions · eligibility details`;
@@ -525,12 +544,25 @@ tabsEl.addEventListener('click', (e) => {
 
     if (panelMode === 'exam' && tab.dataset.tab) {
         activeTab = tab.dataset.tab;
+        currentPage = 1;
         renderTabs();
         renderTabContent();
     } else if (panelMode === 'placement' && tab.dataset.ptab) {
         activePlacementTab = tab.dataset.ptab;
+        currentPage = 1;
         renderPlacementTabs();
         renderPlacementTabContent();
+    }
+});
+
+// Pagination button clicks
+panelBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('.page-btn');
+    if (btn && !btn.hasAttribute('disabled')) {
+        currentPage = parseInt(btn.dataset.page);
+        if (panelMode === 'exam') renderTabContent();
+        else renderPlacementTabContent();
+        panelBody.scrollTop = 0; // scroll back to top of panel
     }
 });
 
