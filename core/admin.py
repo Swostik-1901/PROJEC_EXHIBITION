@@ -1,6 +1,5 @@
-# core/admin.py
 from django.contrib import admin
-from .models import Subject, Module, Lecture, Note, Question
+from .models import Subject, Module, Lecture, Note, Question, HandwrittenNote
 
 
 class ModuleInline(admin.TabularInline):
@@ -23,6 +22,11 @@ class QuestionInline(admin.TabularInline):
     extra = 1
 
 
+class HandwrittenNoteInline(admin.TabularInline):
+    model = HandwrittenNote
+    extra = 1
+
+
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ("name", "order", "done")
@@ -32,4 +36,4 @@ class SubjectAdmin(admin.ModelAdmin):
 @admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):
     list_display = ("title", "subject", "order")
-    inlines = [LectureInline, NoteInline, QuestionInline]
+    inlines = [LectureInline, NoteInline, QuestionInline, HandwrittenNoteInline]

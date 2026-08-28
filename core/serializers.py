@@ -1,6 +1,6 @@
 # core/serializers.py
 from rest_framework import serializers
-from .models import Subject, Module, Lecture, Note, Question
+from .models import Subject, Module, Lecture, Note, Question, HandwrittenNote
 
 
 class LectureSerializer(serializers.ModelSerializer):
@@ -21,14 +21,21 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "url"]
 
 
+class HandwrittenNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HandwrittenNote
+        fields = ["id", "title", "url", "file"]
+
+
 class ModuleSerializer(serializers.ModelSerializer):
     lectures = LectureSerializer(many=True, read_only=True)
     notes = NoteSerializer(many=True, read_only=True)
     questions = QuestionSerializer(many=True, read_only=True)
+    handwritten_notes = HandwrittenNoteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Module
-        fields = ["id", "title", "order", "lectures", "notes", "questions"]
+        fields = ["id", "title", "order", "lectures", "notes", "questions", "handwritten_notes"]
 
 
 class SubjectSerializer(serializers.ModelSerializer):

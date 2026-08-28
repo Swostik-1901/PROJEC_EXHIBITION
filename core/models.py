@@ -54,3 +54,12 @@ class Question(models.Model):
 
     def __str__(self):
         return self.title
+
+class HandwrittenNote(models.Model):
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="handwritten_notes")
+    title = models.CharField(max_length=200)
+    url = models.URLField(blank=True, null=True)
+    file = models.FileField(upload_to="handwritten/", blank=True, null=True)
+
+    def __str__(self):
+        return self.title

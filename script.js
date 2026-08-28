@@ -10,7 +10,11 @@ const ICONS = {
     atom: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/></svg>`,
     play: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z"/></svg>`,
     notes: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg>`,
+    
+    
     question: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 115 1.6c-.6.9-1.8 1.2-1.8 2.4"/><circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none"/></svg>`,
+    pencil: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+
     checklist: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z" rx="2"/><path d="M8 9l2 2 4-4M8 15h8"/></svg>`,
     code: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6l-5 6 5 6M16 6l5 6-5 6M14 4l-4 16"/></svg>`,
     globe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3.5 9h17M3.5 15h17"/></svg>`,
@@ -65,6 +69,7 @@ async function fetchSubjects() {
       const lectures = [];
       const notes = [];
       const questions = [];
+      const handwritten = [];
 
       subj.modules.forEach(mod => {
         mod.lectures.forEach(l => lectures.push({ module: mod.title, title: l.title, url: l.url }));
@@ -74,6 +79,7 @@ async function fetchSubjects() {
           url: n.url || n.file,
         }));
         mod.questions.forEach(q => questions.push({ module: mod.title, title: q.title, url: q.url }));
+        mod.handwritten_notes.forEach(h => handwritten.push({ module: mod.title, title: h.title, url: h.url || h.file }));
       });
 
       return {
@@ -82,7 +88,7 @@ async function fetchSubjects() {
         icon: subj.icon,
         color: subj.color,
         done: subj.done,
-        lectures, notes, questions
+        lectures, notes, questions,handwritten
       };
     });
 
@@ -308,7 +314,7 @@ function isCurrent(subj, i) {
 }
 
 function totalItems(s) {
-    return s.lectures.length + s.notes.length + s.questions.length;
+    return s.lectures.length + s.notes.length + s.questions.length+ s.handwritten.length;
 }
 
 function drawPath() {
@@ -427,6 +433,7 @@ const panelBody = document.getElementById('panelBody');
 const TAB_DEFS = [
     { key: 'lectures', label: 'Lectures', icon: 'play' },
     { key: 'notes', label: 'Notes', icon: 'notes' },
+    { key: 'handwritten', label: 'Handwritten Notes', icon: 'pencil' },
     { key: 'questions', label: 'Questions', icon: 'question' }
 ];
 
@@ -640,3 +647,5 @@ fetchSubjects();
 layoutPlacementStations();
 document.getElementById('placement-container').style.display = 'none';
 document.getElementById('placement-header').style.display = 'none';
+
+
