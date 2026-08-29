@@ -96,7 +96,7 @@ class DSAQuestion(models.Model):
     title = models.CharField(max_length=200)
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES)
     url = models.URLField()
-    topic = models.CharField(max_length=200, blank=True)  # e.g. "Array, Hash Table"
+    topic = models.TextField()  # e.g. "Array, Hash Table"
     frequency = models.FloatField(default=0)  # how often it's asked, from the CSV
 
     def __str__(self):
