@@ -1,6 +1,6 @@
 # core/models.py
 from django.db import models
-
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -40,8 +40,8 @@ class Lecture(models.Model):
 class Note(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="notes")
     title = models.CharField(max_length=200)
-    url = models.URLField(blank=True, null=True)          # option 1: link to Drive etc.
-    file = models.FileField(upload_to="notes/", blank=True, null=True)  # option 2: direct upload
+    url = models.URLField(blank=True, null=True)
+    file = models.FileField(upload_to="notes/", storage=RawMediaCloudinaryStorage(), blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -59,7 +59,7 @@ class HandwrittenNote(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="handwritten_notes")
     title = models.CharField(max_length=200)
     url = models.URLField(blank=True, null=True)
-    file = models.FileField(upload_to="handwritten/", blank=True, null=True)
+    file = models.FileField(upload_to="handwritten_notes/", storage=RawMediaCloudinaryStorage(), blank=True, null=True)
 
     def __str__(self):
         return self.title
