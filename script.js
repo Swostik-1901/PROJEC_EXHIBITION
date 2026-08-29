@@ -1,4 +1,5 @@
 /* ============ ICONS & LOGOS (24x24) ============ */
+const API_BASE = 'http://127.0.0.1:8000';
 const ICONS = {
     // Subject icons (line style)
     tree: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l4 6h-2.5l3.5 5.5H14l3 5.5H7l3-5.5H8.5L12 9H9.5L12 3z"/><path d="M12 20v-2.5"/></svg>`,
@@ -62,7 +63,7 @@ let SUBJECTS = [];
 
 async function fetchSubjects() {
   try {
-    const res = await fetch('http://127.0.0.1:8000/api/subjects/');
+    const res = await fetch(`${API_BASE}/api/subjects/`);
     const data = await res.json();
 
     SUBJECTS = data.map(subj => {
@@ -103,7 +104,7 @@ let COMPANIES = [];
 
 async function fetchCompanies() {
   try {
-    const res = await fetch('http://127.0.0.1:8000/api/companies/');
+    const res = await fetch(`${API_BASE}/api/companies/`);
     const data = await res.json();
 
     COMPANIES = data.map(c => ({
