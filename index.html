@@ -16,6 +16,12 @@
 </head>
 <body>
 
+    <!-- Animated Particle Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Aurora Gradient Overlay -->
+    <div class="aurora-overlay"></div>
+
     <!-- Portal Navigation -->
     <nav class="portal-nav">
         <div class="portal-nav-inner">
@@ -33,7 +39,7 @@
     <!-- Exam Prep Header -->
     <header id="exam-header">
         <div class="eyebrow">Semester Trail Map</div>
-        <h1>UNIROUTE</h1>
+        <h1><span class="shimmer-text">UNIROUTE</span></h1>
         <p class="subtitle">Navigate your subjects, track your progress, and access all lectures, notes &amp; past-year questions in one place.</p>
         <div class="progress-bar-wrap">
             <div class="progress-track">
@@ -46,7 +52,7 @@
     <!-- Placement Portal Header -->
     <header id="placement-header" style="display:none;">
         <div class="eyebrow eyebrow-placement">Placement Portal</div>
-        <h1>UNIROUTE <span class="title-accent">Placements</span></h1>
+        <h1><span class="shimmer-text">UNIROUTE</span> <span class="title-accent">Placements</span></h1>
         <p class="subtitle">Company-wise eligibility criteria, DSA questions, and web dev &amp; project interview resources — all in one trail.</p>
     </header>
 
@@ -87,7 +93,131 @@
         built for focused prep &middot; PE
     </footer>
 
-    <!-- JavaScript -->
+    <!-- JavaScript (original — untouched) -->
     <script src="script.js"></script>
+
+    <!-- Particle Animation Engine (additive only — does NOT modify any existing logic) -->
+    <script>
+    (function() {
+        const canvas = document.getElementById('particle-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let w, h, particles = [], mouse = { x: -1000, y: -1000 };
+        const PARTICLE_COUNT = 80;
+        const COLORS = [
+            'rgba(155, 125, 255, 0.4)',
+            'rgba(240, 176, 96, 0.35)',
+            'rgba(62, 222, 206, 0.3)',
+            'rgba(255, 107, 157, 0.25)',
+            'rgba(255, 255, 255, 0.15)'
+        ];
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+
+        function createParticle() {
+            return {
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                r: Math.random() * 2.2 + 0.5,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                pulse: Math.random() * Math.PI * 2,
+                pulseSpeed: 0.01 + Math.random() * 0.02
+            };
+        }
+
+        function init() {
+            resize();
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(createParticle());
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.pulse += p.pulseSpeed;
+                const alpha = 0.3 + Math.sin(p.pulse) * 0.3;
+                const r = p.r + Math.sin(p.pulse * 0.7) * 0.5;
+
+                // Mouse interaction — gentle push
+                const dx = p.x - mouse.x;
+                const dy = p.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 150) {
+                    const force = (150 - dist) / 150 * 0.015;
+                    p.vx += dx * force;
+                    p.vy += dy * force;
+                }
+
+                // Dampen velocity
+                p.vx *= 0.995;
+                p.vy *= 0.995;
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Wrap edges
+                if (p.x < -10) p.x = w + 10;
+                if (p.x > w + 10) p.x = -10;
+                if (p.y < -10) p.y = h + 10;
+                if (p.y > h + 10) p.y = -10;
+
+                // Draw particle with glow
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+                ctx.restore();
+
+                // Draw connections
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const cdx = p.x - p2.x;
+                    const cdy = p.y - p2.y;
+                    const cdist = Math.sqrt(cdx * cdx + cdy * cdy);
+                    if (cdist < 120) {
+                        ctx.save();
+                        ctx.globalAlpha = (1 - cdist / 120) * 0.08;
+                        ctx.strokeStyle = 'rgba(155, 125, 255, 0.5)';
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', function(e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        // Reduce particle count on mobile for performance
+        if (window.innerWidth < 768) {
+            while (particles.length > 40) particles.pop();
+        }
+
+        init();
+        draw();
+    })();
+    </script>
 </body>
 </html>
